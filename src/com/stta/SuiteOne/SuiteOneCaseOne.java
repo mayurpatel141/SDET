@@ -3,6 +3,7 @@ package com.stta.SuiteOne;
 import java.io.IOException;
 
 import org.testng.SkipException;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -20,6 +21,7 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 	String TestDataToRun[]=null;
 	static int DataSet=-1;	
 	static boolean Testskip=false;
+	static boolean Testfail=false;
 	
 	@BeforeTest
 	public void checkCaseToRun() throws IOException{
@@ -59,6 +61,23 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 		System.out.println("Value Of DataCol2 = "+Arrival_airport);		
 	}	
 	
+	
+	//@AfterMethod method will be executed after execution of @Test method every time.
+		@AfterMethod
+		public void reporterDataResults(){		
+			if(Testskip)
+				//If found Testskip = true, Result will be reported as SKIP against data set line In excel sheet.
+				SuiteUtility.WriteResultUtility(FilePath, TestCaseName, "Pass/Fail/Skip", DataSet+1, "SKIP");
+			else if(Testfail){
+				//If found Testfail = true, Result will be reported as FAIL against data set line In excel sheet.
+				SuiteUtility.WriteResultUtility(FilePath, TestCaseName, "Pass/Fail/Skip", DataSet+1, "FAIL");			
+			}else
+				//If found Testskip = false and Testfail = false, Result will be reported as PASS against data set line In excel sheet.
+				SuiteUtility.WriteResultUtility(FilePath, TestCaseName, "Pass/Fail/Skip", DataSet+1, "PASS");
+			//At last make both flags as false for next data set.
+			Testskip=false;
+			Testfail=false;
+		}
 	//This data provider method will return 2 column's data one by one In every Iteration.
 	@DataProvider
 	public Object[][] SuiteOneCaseOneData(){
