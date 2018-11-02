@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<suite name="Calc Suite">
+
+	<suite-files>
+<!-- If you have more test suites, Please add them below. -->
+   		<suite-file path="./SuiteOne.xml" />
+   
+   
+  </suite-files>
+  
+ </suite>
