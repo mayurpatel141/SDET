@@ -1,31 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/Batch.zip"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/chromedriver.zip"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/guice-3.0.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/IEDriverServer.zip"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/poi-3.10-FINAL-20140208.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/poi-ooxml-3.10-FINAL-20140208.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/poi-ooxml-schemas-3.10-FINAL-20140208.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/reportng-1.1.4.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/saxon-8.7.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/SaxonLiaison.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/velocity-dep-1.4.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/xmlbeans-2.3.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ministrator/.m2/repository/org/testng/testng/6.11/testng-6.11.jar" sourcepath="C:/Users/Ministrator/.m2/repository/org/testng/testng/6.11/testng-6.11-sources.jar">
+	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
 		<attributes>
+			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.testng"/>
-			<attribute name="maven.artifactId" value="testng"/>
-			<attribute name="maven.version" value="6.11"/>
-			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/testng-xslt-maven-plugin-test-0.0.jar"/>
-	<classpathentry kind="lib" path="E:/WorkSpace/SDET/JarFiles/jcommander.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
