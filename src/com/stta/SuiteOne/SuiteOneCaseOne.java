@@ -1,10 +1,16 @@
 package com.stta.SuiteOne;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
@@ -30,6 +36,9 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 	static boolean Testskip=false;
 	static boolean Testfail=false;
 	SoftAssert s_assert =null;	
+	
+	
+	
 	
 	@BeforeTest
 	public void checkCaseToRun() throws IOException{
@@ -81,24 +90,52 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 		//To Convert data from String to Integer
 		String ValueOne = Departure_airport;
 		String ValueTwo = Arrival_airport;
-		
+		Calendar cal = Calendar.getInstance();
+		DateFormat formatter = new SimpleDateFormat("dd MMM YY");
+		//Adding 7 days from the current date
+		cal.add(Calendar.DATE,+7);
+		String departure_date = formatter.format(cal.getTime());
+		cal.add(Calendar.DATE,+7);
+		String return_date = formatter.format(cal.getTime());
 		
 		//To Initialize Chrome browser.
 		loadWebBrowser();
 		//To navigate to URL.
 		driver.navigate().to("https://www.emirates.com/ae/english/");
-		driver.navigate().refresh();
-		
+		String browserTile ="Emirates flights – Book a flight, browse our flight offers and explore the Emirates Experience";
+		//If the Page is not opened will refresh the page
+		if(!driver.getTitle().contains(browserTile)){
+			driver.navigate().refresh();
+		}
+		//listing down element on which action has to be performed
 		WebElement depatureAirport= driver.findElement(By.xpath("//input[@name='Departure airport']"));
-		depatureAirport.sendKeys(ValueOne);
-		depatureAirport.sendKeys(Keys.TAB);
 		WebElement arrivalAirport= driver.findElement(By.xpath("//input[@name='Arrival airport']"));
+		
+		
+		depatureAirport.sendKeys(ValueOne);
+		autoSelectLoction(ValueOne);
+
 		arrivalAirport.sendKeys(ValueTwo);
-		arrivalAirport.sendKeys(Keys.TAB);
-		WebElement searchFlights= driver.findElement(By.xpath("//form/button/span"));
+		autoSelectLoction(ValueTwo);
+		
+		WebElement fromDateBox= driver.findElement(By.id("search-flight-date-picker--depart"));
+		WebElement toDateBox= driver.findElement(By.id("search-flight-date-picker--return"));
+		
+		((JavascriptExecutor)driver).executeScript ("document.getElementById('search-flight-date-picker--depart').removeAttribute('readonly',0);"); // Enables the from date box
+		fromDateBox.clear();
+		fromDateBox.sendKeys(departure_date);
+		
+		((JavascriptExecutor)driver).executeScript ("document.getElementById('search-flight-date-picker--return').removeAttribute('readonly',0);"); // Enables the from date box
+		toDateBox.clear();
+		toDateBox.sendKeys(return_date);
+		
+		WebElement searchFlights= driver.findElement(By.xpath("//button[@type=submit]"));
 		searchFlights.click();
 		
+		WebElement lowestPrice = driver.findElement(By.id("ctl00_c_ctlLowPrice_dvLowestPriceDisplay"));
+		WebElement summaryAmount = driver.findElement(By.className("summary-curr-only"));
 		
+		Assert.assertNotNull(lowestPrice, "Cheapest return tickect is shown to the customer an the price for the same is : " +summaryAmount);
 		if(Testfail){
 			//At last, test data assertion failure will be reported In testNG reports and It will mark your test data, test case and test suite as fail.
 			s_assert.assertAll();		
@@ -151,6 +188,18 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 		else{
 			Add_Log.info(TestCaseName+" : Reporting test case as FAIL In excel.");
 			SuiteUtility.WriteResultUtility(FilePath, SheetName, "Pass/Fail/Skip", TestCaseName, "FAIL");			
+		}
+	}
+	
+	public void autoSelectLoction(String location){
+		List<WebElement> list = driver.findElements(By.xpath("//ol[@class='location__list']//li/descendant::div/p[@class='location__airport__acronym to-highlight']"));
+//		System.out.println(list.size());
+		for(int i=0; i<list.size(); i++){
+//			System.out.println(list.get(i).getText());
+			if(list.get(i).getText().contains(location)){
+				list.get(i).click();
+				break;
+			}
 		}
 	}
 }
