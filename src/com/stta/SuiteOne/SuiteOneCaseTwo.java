@@ -1,18 +1,12 @@
 package com.stta.SuiteOne;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
-import org.testng.Assert;
+import static io.restassured.RestAssured.get;
+
+import java.io.IOException;
+
 import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -21,9 +15,12 @@ import org.testng.asserts.SoftAssert;
 import com.stta.utility.Read_XLS;
 import com.stta.utility.SuiteUtility;
 
+import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+
 //SuiteOneCaseOne Class Inherits From SuiteOneBase Class.
 //So, SuiteOneCaseOne Class Is Child Class Of SuiteOneBase Class And SuiteBase Class.
-public class SuiteOneCaseOne extends SuiteOneBase{
+public class SuiteOneCaseTwo extends SuiteOneBase{
 	Read_XLS FilePath = null;
 	String SheetName = null;
 	String TestCaseName = null;	
@@ -69,8 +66,8 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 	}
 	
 	//Accepts 2 column's String data In every Iteration.
-	@Test(dataProvider="SuiteOneCaseOneData")
-	public void SuiteOneCaseOneTest(String Departure_airport,String Arrival_airport){
+	@Test(dataProvider="SuiteOneCaseTwoData")
+	public void SuiteOneCaseTwoTest(String app_key,String longitude,String latitude){
 		
 		DataSet++;
 		
@@ -87,54 +84,15 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 		
 		//If found DataToRun = "Y" for data set then bellow given lines will be executed.
 		//To Convert data from String to Integer
-		String ValueOne = Departure_airport;
-		String ValueTwo = Arrival_airport;
-		Calendar cal = Calendar.getInstance();
-		DateFormat formatter = new SimpleDateFormat("dd MMM YY");
-		//Adding 7 days from the current date
-		cal.add(Calendar.DATE,+7);
-		String departure_date = formatter.format(cal.getTime());
-		cal.add(Calendar.DATE,+7);
-		String return_date = formatter.format(cal.getTime());
 		
-		//To Initialize Chrome browser.
-		loadWebBrowser();
-		//To navigate to URL.
-		driver.navigate().to("https://www.emirates.com/ae/english/");
-		String browserTile ="Emirates flights – Book a flight, browse our flight offers and explore the Emirates Experience";
-		//If the Page is not opened will refresh the page
-		if(!driver.getTitle().contains(browserTile)){
-			driver.navigate().refresh();
-		}
-		//listing down element on which action has to be performed
-		WebElement depatureAirport= driver.findElement(By.xpath("//input[@name='Departure airport']"));
-		WebElement arrivalAirport= driver.findElement(By.xpath("//input[@name='Arrival airport']"));
+		String uri = "https://api.darksky.net/forecast/" + app_key +"/"+ longitude + ","+ latitude;
 		
+		String res = get(uri).then().contentType(ContentType.JSON).extract().asString();
+		final JsonPath jsonPath = new JsonPath(res);
 		
-		depatureAirport.sendKeys(ValueOne);
-		autoSelectLoction(ValueOne);
-
-		arrivalAirport.sendKeys(ValueTwo);
-		autoSelectLoction(ValueTwo);
-		
-		WebElement fromDateBox= driver.findElement(By.id("search-flight-date-picker--depart"));
-		WebElement toDateBox= driver.findElement(By.id("search-flight-date-picker--return"));
-		
-		((JavascriptExecutor)driver).executeScript ("document.getElementById('search-flight-date-picker--depart').removeAttribute('readonly',0);"); // Enables the from date box
-		fromDateBox.clear();
-		fromDateBox.sendKeys(departure_date);
-		
-		((JavascriptExecutor)driver).executeScript ("document.getElementById('search-flight-date-picker--return').removeAttribute('readonly',0);"); // Enables the from date box
-		toDateBox.clear();
-		toDateBox.sendKeys(return_date);
-		
-		WebElement searchFlights= driver.findElement(By.xpath("//button[@type=submit]"));
-		searchFlights.click();
-		
-		WebElement lowestPrice = driver.findElement(By.id("ctl00_c_ctlLowPrice_dvLowestPriceDisplay"));
-		WebElement summaryAmount = driver.findElement(By.className("summary-curr-only"));
-		
-		Assert.assertNotNull(lowestPrice, "Cheapest return tickect is shown to the customer an the price for the same is : " +summaryAmount);
+		s_assert.assertEquals(jsonPath.getInt("minutely.size()"), 61, "Incorrect number of minutely array items : ");
+		s_assert.assertEquals(jsonPath.getInt("hourly.size()"), 61, "Incorrect number of hourly array items : ");
+		s_assert.assertEquals(jsonPath.getInt("daily.size()"), 61, "Incorrect number of daily array items : ");
 		if(s_assert != null){
 			//At last, test data assertion failure will be reported In testNG reports and It will mark your test data, test case and test suite as fail.
 			Testfail=true;
@@ -170,36 +128,11 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 	
 	//This data provider method will return 4 column's data one by one In every Iteration.
 	@DataProvider
-	public Object[][] SuiteOneCaseOneData(){
+	public Object[][] SuiteOneCaseTwoData(){
 		//To retrieve data from Data 1 Column,Data 2 Column,Data 3 Column and Expected Result column of SuiteOneCaseOne data Sheet.
 		//Last two columns (DataToRun and Pass/Fail/Skip) are Ignored programatically when reading test data.
 		return SuiteUtility.GetTestDataUtility(FilePath, TestCaseName);
 	}	
 	
-	//To report result as pass or fail for test cases In TestCasesList sheet.
-	@AfterTest
-	public void closeBrowser(){
-		//To Close the web browser at the end of test.
-		closeWebBrowser();
-		if(TestCasePass){
-			Add_Log.info(TestCaseName+" : Reporting test case as PASS In excel.");
-			SuiteUtility.WriteResultUtility(FilePath, SheetName, "Pass/Fail/Skip", TestCaseName, "PASS");
-		}
-		else{
-			Add_Log.info(TestCaseName+" : Reporting test case as FAIL In excel.");
-			SuiteUtility.WriteResultUtility(FilePath, SheetName, "Pass/Fail/Skip", TestCaseName, "FAIL");			
-		}
-	}
 	
-	public void autoSelectLoction(String location){
-		List<WebElement> list = driver.findElements(By.xpath("//ol[@class='location__list']//li/descendant::div/p[@class='location__airport__acronym to-highlight']"));
-//		System.out.println(list.size());
-		for(int i=0; i<list.size(); i++){
-//			System.out.println(list.get(i).getText());
-			if(list.get(i).getText().contains(location)){
-				list.get(i).click();
-				break;
-			}
-		}
-	}
 }
