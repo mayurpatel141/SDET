@@ -9,7 +9,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
@@ -110,10 +109,11 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 		WebElement depatureAirport= driver.findElement(By.xpath("//input[@name='Departure airport']"));
 		WebElement arrivalAirport= driver.findElement(By.xpath("//input[@name='Arrival airport']"));
 		
-		
+		depatureAirport.clear();
 		depatureAirport.sendKeys(ValueOne);
 		autoSelectLoction(ValueOne);
 
+		arrivalAirport.clear();
 		arrivalAirport.sendKeys(ValueTwo);
 		autoSelectLoction(ValueTwo);
 		
@@ -127,14 +127,16 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 		((JavascriptExecutor)driver).executeScript ("document.getElementById('search-flight-date-picker--return').removeAttribute('readonly',0);"); // Enables the from date box
 		toDateBox.clear();
 		toDateBox.sendKeys(return_date);
+		toDateBox.click();
 		
 		WebElement searchFlights= driver.findElement(By.xpath("//button[@type=submit]"));
 		searchFlights.click();
 		
-		WebElement lowestPrice = driver.findElement(By.id("ctl00_c_ctlLowPrice_dvLowestPriceDisplay"));
+		Boolean lowestPrice = driver.findElement(By.id("ctl00_c_ctlLowPrice_dvLowestPriceDisplay")).isDisplayed();
 		WebElement summaryAmount = driver.findElement(By.className("summary-curr-only"));
+
+		s_assert.assertEquals(lowestPrice, 1, "Cheapest return tickect is shown to the customer an the price for the same is : " +summaryAmount);
 		
-		Assert.assertNotNull(lowestPrice, "Cheapest return tickect is shown to the customer an the price for the same is : " +summaryAmount);
 		if(s_assert != null){
 			//At last, test data assertion failure will be reported In testNG reports and It will mark your test data, test case and test suite as fail.
 			Testfail=true;
