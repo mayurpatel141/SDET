@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -126,6 +127,19 @@ public class SuiteOneCaseTwo extends SuiteOneBase{
 		Testfail=false;
 	}
 	
+	@AfterTest
+	public void updateExecutionStatus(){
+		//To Close the web browser at the end of test.
+		
+		if(TestCasePass){
+			Add_Log.info(TestCaseName+" : Reporting test case as PASS In excel.");
+			SuiteUtility.WriteResultUtility(FilePath, SheetName, "Pass/Fail/Skip", TestCaseName, "PASS");
+		}
+		else{
+			Add_Log.info(TestCaseName+" : Reporting test case as FAIL In excel.");
+			SuiteUtility.WriteResultUtility(FilePath, SheetName, "Pass/Fail/Skip", TestCaseName, "FAIL");			
+		}
+	}
 	//This data provider method will return 4 column's data one by one In every Iteration.
 	@DataProvider
 	public Object[][] SuiteOneCaseTwoData(){
