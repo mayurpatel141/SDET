@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
@@ -127,9 +128,9 @@ public class SuiteOneCaseOne extends SuiteOneBase{
 		((JavascriptExecutor)driver).executeScript ("document.getElementById('search-flight-date-picker--return').removeAttribute('readonly',0);"); // Enables the from date box
 		toDateBox.clear();
 		toDateBox.sendKeys(return_date);
-		toDateBox.click();
+		toDateBox.sendKeys(Keys.ESCAPE);
 		
-		WebElement searchFlights= driver.findElement(By.xpath("//button[@type=submit]"));
+		WebElement searchFlights= driver.findElement(By.xpath("//button[@type='submit']"));
 		searchFlights.click();
 		
 		Boolean lowestPrice = driver.findElement(By.id("ctl00_c_ctlLowPrice_dvLowestPriceDisplay")).isDisplayed();
