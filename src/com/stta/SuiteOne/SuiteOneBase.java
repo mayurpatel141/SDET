@@ -14,7 +14,8 @@ public class SuiteOneBase extends SuiteBase{
 	Read_XLS FilePath = null;
 	String SheetName = null;
 	String SuiteName = null;
-	String ToRunColumnName = null;	
+	String ToRunColumnName = null;
+		
 	
 	//This function will be executed before SuiteOne's test cases to check SuiteToRun flag.
 	@BeforeSuite
