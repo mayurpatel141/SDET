@@ -15,8 +15,8 @@ public class SuiteOneBase extends SuiteBase{
 	String SheetName = null;
 	String SuiteName = null;
 	String ToRunColumnName = null;	
-	
-	
+
+
 	//This function will be executed before SuiteOne's test cases to check SuiteToRun flag.
 	@BeforeSuite
 	public void checkSuiteToRun() throws IOException{
